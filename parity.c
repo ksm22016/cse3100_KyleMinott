@@ -8,6 +8,6 @@ int main(void) {
         v = v & (v - 1);
     }
 
-    printf("Even parity = %d\n", parity); //1 if odd count of 1s, else 0
+    printf("%d\n", parity); //1 if odd count of 1s, else 0
     return 0;
 }
