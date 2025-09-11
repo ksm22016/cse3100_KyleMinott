@@ -23,7 +23,7 @@ int main() {
     if (n == 1)
         printf("%d is a happy number.\n", m);
     else
-        printf("%d is a NOT a happy number.\n", m);
+        printf("%d is NOT a happy number.\n", m);
 
     return 0;
 }
