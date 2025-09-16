@@ -8,19 +8,16 @@ TARGETS:=ex-factorial catalan
 .PHONY: all clean
 
 all: $(TARGETS)
-
+# ex-factorial
 ex-factorial: ex-factorial.o
 	$(CC) $(CFLAGS) -o $@ $^
-
-ex-factorial.o: ex-factorial.c
-	$(CC) $(CFLAGS) -c $<
-
+	
 # catalan
 catalan: catalan.o
 	$(CC) $(CFLAGS) -o $@ $^
 
-catalan.o: catalan.c
-	$(CC) $(CFLAGS) -c $<
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	rm -rf *.o *~ $(TARGETS) a.out
