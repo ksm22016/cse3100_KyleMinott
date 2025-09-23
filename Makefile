@@ -1,7 +1,15 @@
-TARGETS=oddSum 2d-walk
+# define more variables so it is easier to make changes
+# again, study the new varabiles and rules
 CC=gcc
-CFLAGS=-Wall -g
-all : $(TARGETS)
-$(TARGETS): %: %.c
+CFLAGS=-g -Wall -std=c99
+TARGETS=argvcat squares
+
+all: $(TARGETS)
+
+#Static Pattern Rules
+$(TARGETS): % : %.c
+	$(CC) $(CFLAGS) -o $@ $<
+
 clean:
-	@rm -f $(TARGETS) a.out *.o
+	rm -rf *.o *~ $(TARGETS)
+
