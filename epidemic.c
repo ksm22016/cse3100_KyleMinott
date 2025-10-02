@@ -96,15 +96,14 @@ unsigned hash(unsigned a)
 int summary(THost hosts[], int m)
 {
     int S_n = 0, I_n = 0, R_n = 0;
-    for(int i = 0; i < m; i++)
-    {
+    for (int i = 0; i < m; i++) {
         S_n += (hosts[i].type == S);
         I_n += (hosts[i].type == I);
         R_n += (hosts[i].type == R);
     }
-    if(I_n == 0)
-    {
-        printf("S I R\n");
+    if (I_n == 0) {
+        // Match the expected header exactly (spaces included)
+        printf("    S        I        R\n");
         printf("%lf %lf %lf\n",
                (double)S_n/(S_n + I_n + R_n),
                (double)I_n/(S_n + I_n + R_n),
@@ -112,7 +111,6 @@ int summary(THost hosts[], int m)
     }
     return I_n > 0;
 }
-
 
 int one_round(THost *hosts, int m, node *p_arr[], int n_arr, int k, int T)
 {
