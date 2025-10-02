@@ -1,10 +1,13 @@
-TARGETS=epidemic
-CC=gcc
-CFLAGS=-Wall -g -std=c99
+CC := gcc
+CFLAGS := -g -Wall -std=c99
+TARGETS := squares calculator
 
-all : $(TARGETS)
+all: $(TARGETS)
+squares: squares.c
+	$(CC) $(CFLAGS) -o $@ $^
 
-$(TARGETS): %: %.c
+calculator: calculator.c linkedlist.c linkedlist.h 
+	$(CC) $(CFLAGS) -o $@ $^ -lm
 
-clean: 
-	@rm -f $(TARGETS) a.out *.o
+clean:
+	rm -rf *.o *.exe $(TARGETS)

@@ -1,62 +1,58 @@
-#include <stdio.h>
+#include<stdio.h>
+#include<stdlib.h>
 
-/* This program should print the sum of the elements
- *     1^2, 2^2, 3^2, ..., n^2
- * where n is an integer provided by the user on the
- * command line. Hunt down the bugs and squash them!
- * Seek out the memory leaks and plug them up! */
-
-/* Computes the sum of the first n elements in the array. */
-int sum(int n, int* arr)
-{
-    int i;
-    int total = 0;
-    for (i = 0; i < n; i++) {
-        total += arr[i];
+void print_array(int *arr, int n){
+    for(int i = 0; i < n; i++){
+        printf("%d ", arr[i]);
     }
-    return total;                      //Return the value
+    printf("\n");
 }
 
-/* Fills the given array with the values
- * 1^2, 2^2, 3^2, ..., (n-1)^2, n^2. */
-void fillSquares(int n, int* arr)
-{
-    for (int i = 0; i < n; i++) {
-        int k = i + 1;
-        arr[i] = k * k;                //arr[0] = 1^2, ..., arr[n-1] = n^2
-    }
+int absolute(int a){
+//TODO: Write code to return absolute value of a number
+// function should return absolute value of a number absolute(9)=9, absolute(-9)=9
+    return (a < 0) ? -a : a;
 }
 
-/* Reads an integer n from arguments,
- * fills array with squares, and computes
- * the sum of the squares. Prints out the
- * sum before freeing all used memory. */
-int main(int argc, char* argv[])
-{
-    // There must be at least 1 argument after the program
-    // although only the first one is used.
-    if (argc < 2) {
-        printf("usage: ./squares n\n");
-        return 1;
+void sort_squares(int *arr, int n){
+    int left = 0;
+    int right = n - 1;
+    int *result = (int *)malloc(n * sizeof(int));
+
+    for(int i = n - 1; i >= 0; i--){
+        if(absolute(arr[left]) > absolute(arr[right])){
+            //fill code here
+            result[i] = arr[left] * arr[left];
+            left++;
+        }
+        else{
+            //fill code here
+            result[i] = arr[right] * arr[right];
+            right--;
+        }
     }
-
-    // convert the first argument from a string to a number
-    int n = atoi(argv[1]);
-    if (n <= 0) {
-        printf("n must be positive.\n");
-        return 1;
+    
+// copying elements of result to arr
+    for(int i = 0; i < n; i++){
+        arr[i] = result[i];
     }
+ 
+    //fill code here
+    free(result);
+}
 
-    int *arr = malloc((size_t)n * sizeof *arr);
-    if (!arr) {
-        perror("malloc");
-        return 1;
+int main(int argc, char *argv[]) {
+    if(argc < 2){
+        printf("Usage: ./squares [elements in ascending order]\n");
+        exit(0);
     }
-
-    fillSquares(n, arr);
-    int total = sum(n, arr);
-    printf("total: %d\n", total);
-
+    int n = argc - 1;
+    int *arr = (int *)malloc(n * sizeof(int));
+    for(int i = 0; i < n; i++){
+        arr[i] = atoi(argv[i+1]);
+    }
+    sort_squares(arr, n);
+    print_array(arr, n);
     free(arr);
     return 0;
 }
