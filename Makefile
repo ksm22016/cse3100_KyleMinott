@@ -1,13 +1,11 @@
-CC := gcc
-CFLAGS := -g -Wall -std=c99
-TARGETS := squares calculator
+CC=gcc
+CFLAGS=-Wall -g -std=c99
+TARGETS=ziplist common
 
 all: $(TARGETS)
-squares: squares.c
-	$(CC) $(CFLAGS) -o $@ $^
 
-calculator: calculator.c linkedlist.c linkedlist.h 
-	$(CC) $(CFLAGS) -o $@ $^ -lm
+$(TARGETS): %: %.c
+	$(CC) $(CFLAGS) -o $@ $<
 
 clean:
-	rm -rf *.o *.exe $(TARGETS)
+	rm -f *.o *~ $(TARGETS) a.out
