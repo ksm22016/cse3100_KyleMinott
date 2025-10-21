@@ -172,8 +172,8 @@ void    child_main(int fdp[], int fdc[], int seed)
         }
     }
     //  close all pipe file descriptors
-    if (close(fdp[PIPEFD_WRITE]) == -1) die("child: close(fdp[WRITE])");
-    if (close(fdc[PIPEFD_READ])  == -1) die("child: close(fdc[READ])");
+    if (close(fdp[PIPEFD_READ])   == -1) die("child: close(fdp[READ])");
+    if (close(fdc[PIPEFD_WRITE])  == -1) die("child: close(fdc[WRITE])");
     
 
     exit(EXIT_SUCCESS);
@@ -242,8 +242,8 @@ int main(int argc, char *argv[])
 
     // TODO
     //      close unused pipe file descriptor
-    if (close(fdp[PIPEFD_WRITE]) == -1) die("child: close(fdp[WRITE])");
-    if (close(fdc[PIPEFD_READ])  == -1) die("child: close(fdc[READ])");
+    if (close(fdp[PIPEFD_READ]) == -1)  die("parent: close(fdp[READ])");
+    if (close(fdc[PIPEFD_WRITE]) == -1) die("parent: close(fdc[WRITE])");
     
     //      get max from the child
     {
@@ -308,9 +308,9 @@ int main(int argc, char *argv[])
     }
 }
     //      close all pipe file descriptors
-    if (close(fdp[PIPEFD_WRITE]) == -1) die("child: close(fdp[WRITE])");
-    if (close(fdc[PIPEFD_READ])  == -1) die("child: close(fdc[READ])");
-    
+    if (close(fdp[PIPEFD_WRITE]) == -1) die("parent: close(fdp[WRITE])");
+    if (close(fdc[PIPEFD_READ])  == -1) die("parent: close(fdc[READ])");
+
     //wait for the child process to finish
     wait(NULL);
     return 0;
