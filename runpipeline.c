@@ -71,21 +71,34 @@ void start_program(Program *programs, int num_programs, int cur)
 {
     // TODO
     pid_t pid = fork();
-    if (pipe(pd) == -1) {
-        perror("Error.");
-        return -1;
+    if (pid < 0) {
+        die("fork() failed.");
     }
-    if (dup2(p[1], STDOUT_FILENO))
-        perror("dup2");
-        die(1);
 
-        execlp("cat", "cat", "whitman.txt", (char*)NULL);
-        perror("cat error.");
-        die(1);
     if (pid == 0) {
-        dup2(1, 0);
-        close(1);
-        char *argv[] = {"cat", "whitman.txt"}
+
+        int in_fd  = programs[cur].fd_in; 
+        int out_fd = programs[cur].fd_out;
+
+        if(in_fd >= 0) {
+            if(dup2(in_fd, FD_STDIN) == -1) die("dup2(stdin) failed.");
+        }
+        if (out_fd >= 0) {
+            if (dup2(out_fd, FD_STDOUT) == -1) die("dup2(stdout) failed.");
+    }
+    for (int j = 0; j < num_programs; j++) {
+            if (programs[j].fd_in  >= 0)  close(programs[j].fd_in);
+            if (programs[j].fd_out >= 0)  close(programs[j].fd_out);
+        }
+
+        execvp(programs[cur].argv[0], programs[cur].argv);
+        die("execvp() failed.");
+    }
+
+    programs[cur].pid = pid;
+
+    if (programs[cur].fd_in  >= 0) { close(programs[cur].fd_in);  programs[cur].fd_in  = -1; }
+    if (programs[cur].fd_out >= 0) { close(programs[cur].fd_out); programs[cur].fd_out = -1; }
 }
 
 /* Wait on a program. 
@@ -107,9 +120,14 @@ int wait_on_program(Program *prog)
         return -1;
 
     // TODO
-    return WEXITSTATUS(exitStatus);
-}
+    int status;
+    if (waitpid(prog->pid, &status, 0) == -1)
+        return -1;
 
+    if (WIFEXITED(status))
+        return WEXITSTATUS(status);
+
+}
 /* This function creates pipes to be used for connecting two pipeline stages.
  * You can create all pipes here,
  * or you can create pipes when they are needed in start_program().
@@ -128,6 +146,16 @@ int wait_on_program(Program *prog)
 void prepare_pipes(Program *programs, int num_programs)
 {
     // TODO
+   if (num_programs <= 1) return;
+
+    for (int i = 0; i < num_programs - 1; i++) {
+        int pd[2];
+        if (pipe(pd) == -1)
+            die("pipe() failed.");
+
+        programs[i].fd_out    = pd[PIPEFD_WRITE];
+        programs[i+1].fd_in   = pd[PIPEFD_READ];
+    }
 }
 
 /*********************************************************/
