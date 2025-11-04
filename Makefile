@@ -1,12 +1,17 @@
-TARGETS=guess-my-number
-SRCS=$(patsubst %,%.c,$(TARGETS))
+TARGET=test-madd
+OBJS=test-madd.o matrix.o madd.o
+SRCS=$(patsubst %.o,%.c,$(OBJS))
+HEADERS=matrix.h 
 CC=gcc
-CFLAGS= -Wall -g -std=c99 
+CFLAGS= -Wall -pthread -std=c99 -g
 
-all : $(TARGETS)
+all : $(TARGET)
 
-$(TARGETS): %: %.c
-	$(CC) $(CFLAGS) -o $@ $<
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS)
 
 clean: 
-	@rm -f $(TARGETS) *.o a.out 
+	@rm -f $(OBJS) $(TARGET)
+
+%.o : %.c $(HEADERS)
+	$(CC) $(CFLAGS) -c $<
