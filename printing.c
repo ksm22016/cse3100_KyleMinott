@@ -147,17 +147,15 @@ void * printer_main(void * arg)
     for (;;) {
         int job_time = 0;
 
-        // Lock around "check + fetch" so it's atomic
         check_pthread_return(pthread_mutex_lock(&jq->mutex), "pthread_mutex_lock");
         int rem = q_num_jobs(jq);
         if (rem <= 0) {
             check_pthread_return(pthread_mutex_unlock(&jq->mutex), "pthread_mutex_unlock");
-            break; // no more jobs
+            break;
         }
         job_time = q_fetch_job(jq, p->id);
         check_pthread_return(pthread_mutex_unlock(&jq->mutex), "pthread_mutex_unlock");
 
-        // Do the job outside the lock to allow parallelism
         print_job(job_time);
         p->njobs++;
     }
@@ -232,12 +230,10 @@ int main(int argc, char *argv[])
         );
     }
 
-    // Join
     for (int i = 0; i < num_printers; i++) {
         check_pthread_return(pthread_join(printers[i].thread_id, NULL), "pthread_join");
     }
 
-    // Clean up
     check_pthread_return(pthread_mutex_destroy(&job_queue.mutex), "pthread_mutex_destroy");
 
     q_destroy(&job_queue);
