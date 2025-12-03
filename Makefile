@@ -1,12 +1,10 @@
-TARGETS=guess-mt
-SRCS=$(patsubst %,%.c,$(TARGETS))
+TARGETS=food
 CC=gcc
-CFLAGS= -Wall -g -pthread -std=c99 
+CFLAGS=-Wall -g -pthread -std=gnu99
 
 all : $(TARGETS)
 
 $(TARGETS): %: %.c
-	$(CC) $(CFLAGS) -o $@ $<
 
 clean: 
-	@rm -f $(TARGETS) *.o a.out 
+	@rm -f $(TARGETS) a.out *.o
