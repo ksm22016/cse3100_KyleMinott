@@ -134,6 +134,8 @@ int main(int argc, char *argv[])
     if (recv_lines(sockfd, buf, LINE_SIZE) == -1)
         die("recv_lines max failed");
 
+    printf("%s", buf);
+    
     if (get_number(buf, &max) == -1)
         die("failed to parse max");
 
