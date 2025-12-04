@@ -211,29 +211,32 @@ void * thread_main(void * arg_in)
     //      call gmn_check()
             int res = gmn_check(&gmn, guess);
     //      send the result and, if the guess is correct, send the final message
-            n = snprintf(outbuffer, sizeof(outbuffer), "%d", res);
-            if (send_all(sockfd, outbuffer, n) == -1) {
-                close(sockfd);
-                free(arg);
-                return NULL;
-            }
-
             if (res == 0) {
+                // Correct guess: send "0" + final message (no newline after 0)
+                if (send_all(sockfd, "0", 1) == -1) {
+                    close(sockfd);
+                    free(arg);
+                    return NULL;
+                }
+
                 char *msg = gmn_get_message(&gmn);
-            if (send_all(sockfd, msg, strlen(msg)) == -1) {
-                close(sockfd);
-                free(arg);
-                return NULL;
-            }
-            break;
-        } else {
-            if (send_all(sockfd, "\n", 1) == -1) {
-                close(sockfd);
-                free(arg);
-                return NULL;
+                if (send_all(sockfd, msg, strlen(msg)) == -1) {
+                    close(sockfd);
+                    free(arg);
+                    return NULL;
+                }
+
+                break;
+            } else {
+                // Wrong guess: send "1\n" or "-1\n" exactly
+                n = snprintf(outbuffer, sizeof(outbuffer), "%d\n", res);
+                if (send_all(sockfd, outbuffer, n) == -1) {
+                    close(sockfd);
+                    free(arg);
+                    return NULL;
+                }
             }
         }
-    }
     //  clean up: close FD and free memory. 
     //  Do clean up on error. See the demo code.
     close(sockfd);
