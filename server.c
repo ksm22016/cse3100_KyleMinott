@@ -193,11 +193,15 @@ void * thread_main(void * arg_in)
     while (1) {
     //      wait for a guess
             int rc = recv(sockfd, buffer, sizeof(buffer) - 1, 0);
-            if (rc <= 0) {
+            if (rc < 0) {
                 close(sockfd);
                 free(arg);
                 return NULL;
             }
+            if (rc == 0) {
+                continue;
+            }
+
             buffer[rc] = '\0';
             char *nl = strchr(buffer, '\n');
             if (nl) *nl = '\0';
