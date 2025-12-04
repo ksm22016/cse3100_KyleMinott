@@ -192,11 +192,16 @@ void * thread_main(void * arg_in)
     //  repeat the following until guess is correct
     while (1) {
     //      wait for a guess
-            if (recv_lines(sockfd, buffer, sizeof(buffer)) == -1) {
+            int rc = recv(sockfd, buffer, sizeof(buffer) - 1, 0);
+            if (rc <= 0) {
                 close(sockfd);
                 free(arg);
                 return NULL;
             }
+            buffer[rc] = '\0';
+            char *nl = strchr(buffer, '\n');
+            if (nl) *nl = '\0';
+            
 
             if (sscanf(buffer, "%d", &guess) != 1) {
                 close(sockfd);
